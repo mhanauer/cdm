@@ -1,0 +1,63 @@
+---
+title: "Test"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Try CDM in R
+```{r}
+library(CDM)
+library(GDINA)
+```
+Load in IRT data and get the  Q matrix
+poly_irt_sas
+```{r}
+setwd("/Volumes/GoogleDrive/My Drive/Evidera/psychometrics")
+cdm_dat = read.csv("poly_irt_sas.csv", header =  TRUE)
+cdm_dat_1_6 = cdm_dat[1:6]
+q_mat = data.frame(item = 1:6, skill_1 = c(rep(1,3), rep(0,3)), skill_2 = c(rep(0,3), rep(1,3)))
+q_mat
+```
+Need to understand how multidimenational CDM works
+```{r}
+model_gdina = gdina(cdm_dat_1_6, q_mat)
+model_gdina$probitem
+model_gdina$pattern[-c(1:4)] = round(model_gdina$pattern[-c(1:4)],3)
+model_gdina$attribute.patt
+summary(model_gdina)
+```
+Try example from package
+```{r}
+data("sim.dina", package = "CDM")
+data("sim.qmatrix", package = "CDM")
+dat = sim.dina
+Q = sim.qmatrix
+mod1 = gdina(data = dat, q.matrix = Q)
+summary(mod1)
+plot(mod1)
+mod1$attribute.patt[1]
+mod1$pattern
+```
+Try GDINA
+```{r}
+dat = sim10GDINA$simdat
+Q = matrix(c(1,0,0,0,1,0,0,0,1,1,0,1,0,1,1,1,1,0,0,0,1,1,0,0,1,1,1,1,0,1),byrow = T,ncol = 3)
+
+est = GDINA(dat = dat, Q = Q)
+### You can evaluate whether your apriori Q matrix is correct.  So you have some room for error when guessing.
+Qv  = Qval(est, method = "Wald")
+Qv
+mc = modelcomp(est)
+mc
+```
+
+
+
+
+
+
+
+
+
