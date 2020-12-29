@@ -22,35 +22,32 @@ q_mat
 ```
 Need to understand how multidimenational CDM works
 ```{r}
-model_gdina = gdina(cdm_dat_1_6, q_mat)
+model_gdina = GDINA(cdm_dat_1_6, q_mat, sequential = TRUE)
 model_gdina$probitem
 model_gdina$pattern[-c(1:4)] = round(model_gdina$pattern[-c(1:4)],3)
 model_gdina$attribute.patt
 summary(model_gdina)
+plot(model_gdina, what = "mp", person = c(4))
 ```
-Try example from package
-```{r}
-data("sim.dina", package = "CDM")
-data("sim.qmatrix", package = "CDM")
-dat = sim.dina
-Q = sim.qmatrix
-mod1 = gdina(data = dat, q.matrix = Q)
-summary(mod1)
-plot(mod1)
-mod1$attribute.patt[1]
-mod1$pattern
-```
+
 Try GDINA
 ```{r}
-dat = sim10GDINA$simdat
-Q = matrix(c(1,0,0,0,1,0,0,0,1,1,0,1,0,1,1,1,1,0,0,0,1,1,0,0,1,1,1,1,0,1),byrow = T,ncol = 3)
+dat = sim20seqGDINA$simdat
+Q = sim20seqGDINA$simQ
 
-est = GDINA(dat = dat, Q = Q)
+est = GDINA(dat = dat, Q = Q, sequential = TRUE)
 ### You can evaluate whether your apriori Q matrix is correct.  So you have some room for error when guessing.
 Qv  = Qval(est, method = "Wald")
 Qv
 mc = modelcomp(est)
 mc
+```
+Plot probability of Mastery for each person
+```{r}
+plot(mod1, item = 10)
+plot(mod1, what = "IRF", item = 10,withSE = TRUE)
+# plot mastery probabilities for individuals 4 and 10
+plot(est, what = "mp", person = c(5))
 ```
 
 
